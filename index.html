@@ -1,0 +1,392 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+#G{font-family:'Cinzel',serif;background:#0a0618;color:#f0d080;min-height:500px;border-radius:16px;overflow:hidden;position:relative}
+.screen{display:none;animation:fadeIn .4s ease}
+.screen.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:.7}50%{opacity:1}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes pop{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes starfall{from{opacity:0;transform:translate(0,0)}to{opacity:.5;transform:translate(-60px,80px)}}
+@keyframes xprise{0%{opacity:1;transform:translateY(0)}100%{opacity:0;transform:translateY(-40px)}}
+
+/* ---- STARS BG ---- */
+.starfield{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.s{position:absolute;background:#f0d080;border-radius:50%}
+
+/* ---- TITLE SCREEN ---- */
+#ts{background:#0a0618;padding:0}
+.title-art{width:100%;height:180px;position:relative;background:#0a0618;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.moon{width:90px;height:90px;border-radius:50%;background:#f0d080;position:relative;z-index:2;animation:float 3s ease-in-out infinite;box-shadow:0 0 40px #f0d08066}
+.dome-svg{position:absolute;bottom:0;left:50%;transform:translateX(-50%);z-index:3}
+.title-text{text-align:center;padding:12px 24px 0}
+.title-main{font-size:22px;font-weight:700;color:#f0d080;letter-spacing:2px;text-shadow:0 0 20px #f0d08088;line-height:1.2}
+.title-sub{font-size:11px;color:#c8a050;letter-spacing:3px;margin-top:4px}
+.title-desc{font-size:12px;color:#a08040;margin:12px 24px;line-height:1.6;text-align:center;font-family:sans-serif;font-weight:400}
+.ornament{color:#c8a050;font-size:18px;letter-spacing:6px;text-align:center;margin:8px 0;opacity:.7}
+.start-btn{display:block;margin:14px auto 0;background:transparent;border:1.5px solid #c8a050;color:#f0d080;font-family:'Cinzel',serif;font-size:14px;padding:12px 40px;border-radius:4px;cursor:pointer;letter-spacing:2px;transition:all .2s;position:relative;overflow:hidden}
+.start-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,#f0d02022,transparent);background-size:200%;animation:shimmer 2s infinite}
+.start-btn:hover{background:#c8a05022;box-shadow:0 0 20px #c8a05044;transform:scale(1.03)}
+.tips{display:flex;gap:10px;padding:14px 20px;justify-content:center;flex-wrap:wrap}
+.tip-pill{background:#1a0f30;border:0.5px solid #3a2860;border-radius:20px;padding:5px 14px;font-size:11px;color:#a080c0;font-family:sans-serif;font-weight:400}
+
+/* ---- HUD ---- */
+#hud{background:#0d0820;padding:10px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #2a1e50}
+.hud-score{font-size:15px;color:#f0d080;font-weight:700}
+.hud-label{font-size:10px;color:#806040;letter-spacing:1px;display:block}
+.hud-val{font-size:16px;color:#f0d080;font-weight:700;display:block;line-height:1}
+.hud-sep{width:1px;height:30px;background:#2a1e50}
+.hearts{display:flex;gap:4px}
+.heart{font-size:16px;transition:transform .2s}
+.heart.lost{opacity:.25;transform:scale(.8)}
+.xp-bar-wrap{flex:1;margin-left:4px}
+.xp-bar-bg{height:6px;background:#1a0f30;border-radius:3px;overflow:hidden;border:0.5px solid #3a2860}
+.xp-bar-fill{height:100%;background:linear-gradient(90deg,#c8a050,#f0d080);border-radius:3px;transition:width .5s ease}
+.xp-lbl{font-size:10px;color:#806040;letter-spacing:1px;margin-bottom:3px;font-family:sans-serif}
+.streak-badge{background:#2a1500;border:1px solid #c86020;border-radius:20px;padding:3px 10px;font-size:11px;color:#f08030;display:none;animation:pulse 1s infinite}
+.streak-badge.on{display:block}
+
+/* ---- QUIZ AREA ---- */
+#qa{padding:14px 16px;background:#0a0618}
+.q-num{font-size:10px;color:#806040;letter-spacing:2px;margin-bottom:6px;font-family:sans-serif}
+.prog-wrap{margin-bottom:12px}
+.prog-bg{height:3px;background:#1a0f30;border-radius:2px}
+.prog-fill{height:100%;background:#c8a050;border-radius:2px;transition:width .5s}
+.scholar-card{background:#0f0825;border:1px solid #2a1e50;border-radius:10px;padding:14px;margin-bottom:12px;position:relative;overflow:hidden}
+.scholar-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#c8a050,#f0d080,#c8a050)}
+.cat-tag{display:inline-block;background:#1a0f30;border:0.5px solid #3a2860;border-radius:12px;padding:3px 10px;font-size:10px;color:#9070c0;letter-spacing:1px;margin-bottom:8px;font-family:sans-serif;font-weight:400}
+.q-text{font-size:15px;color:#f0d080;line-height:1.55;font-weight:400}
+.timer-ring{position:absolute;top:12px;right:12px}
+.timer-num{font-size:13px;color:#c8a050;text-align:center;display:block;margin-top:2px;font-family:sans-serif}
+.choices{display:grid;gap:8px;margin-bottom:10px}
+.choice{background:#0f0825;border:1px solid #2a1e50;border-radius:8px;padding:12px 14px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s;text-align:left;width:100%;color:#d0b060;font-family:sans-serif;font-size:13px;line-height:1.4}
+.choice:hover:not(:disabled){background:#1a0f38;border-color:#5a4090;transform:translateX(4px)}
+.choice:active:not(:disabled){transform:scale(.97)}
+.choice.correct{background:#0a2010;border-color:#3a9040;color:#60c870;animation:pop .3s ease}
+.choice.wrong{background:#200a0a;border-color:#903040;color:#d05060;animation:shake .3s ease}
+.choice.reveal{background:#0a2010;border-color:#2a6030;color:#40a050}
+.choice:disabled{cursor:default}
+.ch-letter{width:28px;height:28px;border-radius:50%;border:1px solid #3a2860;display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'Cinzel',serif;flex-shrink:0;color:#9070c0;transition:all .15s}
+.choice.correct .ch-letter{background:#3a9040;border-color:#60c870;color:#fff}
+.choice.wrong .ch-letter{background:#903040;border-color:#d05060;color:#fff}
+.choice.reveal .ch-letter{background:#2a6030;border-color:#40a050;color:#fff}
+
+/* ---- LORE PANEL ---- */
+.lore-panel{background:#0f0825;border:1px solid #2a1e50;border-left:3px solid #c8a050;border-radius:0 8px 8px 0;padding:12px 14px;margin-bottom:10px;display:none;animation:fadeIn .3s ease}
+.lore-panel.show{display:block}
+.lore-title{font-size:10px;color:#c8a050;letter-spacing:2px;margin-bottom:5px;font-family:sans-serif;font-weight:700}
+.lore-text{font-size:12px;color:#a090c0;line-height:1.6;font-family:sans-serif;font-weight:400}
+.lore-result{font-size:13px;font-weight:700;margin-bottom:6px;font-family:'Cinzel',serif}
+.lore-result.win{color:#60c870}
+.lore-result.lose{color:#d05060}
+
+.next-btn{width:100%;background:transparent;border:1.5px solid #c8a050;color:#f0d080;font-family:'Cinzel',serif;font-size:13px;padding:11px;border-radius:6px;cursor:pointer;letter-spacing:1px;display:none;transition:all .2s}
+.next-btn:hover{background:#c8a05022;box-shadow:0 0 15px #c8a05033}
+.next-btn.show{display:block}
+
+/* ---- RESULT SCREEN ---- */
+#rs{background:#0a0618;padding:20px 16px}
+.result-header{text-align:center;margin-bottom:16px}
+.trophy{font-size:52px;display:block;text-align:center;animation:float 2s ease-in-out infinite}
+.result-title{font-size:20px;color:#f0d080;font-weight:700;text-align:center;margin:8px 0 4px;letter-spacing:1px}
+.result-rank{display:inline-block;background:#1a0f30;border:1px solid #c8a050;border-radius:20px;padding:5px 20px;font-size:12px;color:#c8a050;letter-spacing:2px;margin:6px auto;display:block;text-align:center;width:fit-content;margin:6px auto}
+.result-sub{font-size:12px;color:#806040;text-align:center;font-family:sans-serif;font-weight:400;line-height:1.5;margin-bottom:14px}
+.stats-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:14px}
+.stat-box{background:#0f0825;border:1px solid #2a1e50;border-radius:8px;padding:12px 8px;text-align:center}
+.stat-n{font-size:22px;color:#f0d080;font-weight:700;display:block}
+.stat-l{font-size:10px;color:#806040;letter-spacing:1px;font-family:sans-serif;margin-top:2px;display:block}
+.fact-recap{background:#0f0825;border:1px solid #2a1e50;border-radius:10px;padding:14px;margin-bottom:14px}
+.fact-recap-title{font-size:10px;color:#c8a050;letter-spacing:2px;margin-bottom:10px;font-family:sans-serif;font-weight:700}
+.fact-item{border-bottom:0.5px solid #1a1030;padding:8px 0;font-family:sans-serif}
+.fact-item:last-child{border-bottom:none}
+.fact-q{font-size:11px;color:#806040;margin-bottom:3px}
+.fact-a{font-size:12px;color:#a090c0;line-height:1.5;font-weight:400}
+.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+.btn-gold2{flex:1;background:transparent;border:1.5px solid #c8a050;color:#f0d080;font-family:'Cinzel',serif;font-size:12px;padding:11px;border-radius:6px;cursor:pointer;letter-spacing:1px;transition:all .2s;min-width:120px}
+.btn-gold2:hover{background:#c8a05022;box-shadow:0 0 15px #c8a05033}
+.btn-sec{flex:1;background:transparent;border:1px solid #3a2860;color:#9070c0;font-family:sans-serif;font-size:12px;font-weight:400;padding:11px;border-radius:6px;cursor:pointer;transition:all .2s;min-width:120px}
+.btn-sec:hover{background:#1a0f30;border-color:#5a4090}
+
+/* XP popup */
+.xp-pop{position:absolute;font-family:'Cinzel',serif;font-size:13px;color:#f0d080;pointer-events:none;animation:xprise .8s ease forwards;z-index:99}
+</style>
+
+<div id="G">
+<h2 class="sr-only">Scholars of the Golden Age — an educational quiz game about the Islamic Golden Age</h2>
+<div class="starfield" id="sf"></div>
+
+<!-- TITLE SCREEN -->
+<div class="screen on" id="ts">
+  <div class="title-art">
+    <div class="moon"></div>
+    <svg class="dome-svg" width="320" height="90" viewBox="0 0 320 90">
+      <path d="M0 90 L0 60 Q30 20 80 15 Q110 10 130 25 Q148 5 160 0 Q172 5 190 25 Q210 10 240 15 Q290 20 320 60 L320 90 Z" fill="#1a0a30"/>
+      <path d="M0 90 L0 62 Q30 22 80 17 Q110 12 130 27 Q148 7 160 2 Q172 7 190 27 Q210 12 240 17 Q290 22 320 62 L320 90" fill="none" stroke="#c8a050" stroke-width="1"/>
+      <rect x="150" y="55" width="20" height="35" rx="2" fill="#2a1440"/>
+      <rect x="155" y="58" width="10" height="12" rx="5" fill="none" stroke="#c8a050" stroke-width=".8"/>
+      <rect x="60" y="65" width="16" height="25" rx="2" fill="#2a1440"/>
+      <rect x="240" y="65" width="16" height="25" rx="2" fill="#2a1440"/>
+    </svg>
+  </div>
+  <div class="title-text">
+    <div class="title-main">Scholars of the<br>Golden Age</div>
+    <div class="title-sub">&#9670; 8th – 13th Century &#9670;</div>
+  </div>
+  <div class="ornament">&#11835; &#10022; &#11835;</div>
+  <p class="title-desc">The Islamic Golden Age transformed human knowledge — mathematics, astronomy, medicine, philosophy, and more. Answer 10 questions. Unlock lore. Earn your scholar rank.</p>
+  <div class="tips">
+    <span class="tip-pill">&#9670; 10 Questions</span>
+    <span class="tip-pill">&#9670; 30s Timer</span>
+    <span class="tip-pill">&#9670; 3 Lives</span>
+    <span class="tip-pill">&#9670; Streak Bonuses</span>
+    <span class="tip-pill">&#9670; Lore Unlocks</span>
+  </div>
+  <button class="start-btn" onclick="startGame()">Enter the House of Wisdom</button>
+  <div style="height:20px"></div>
+</div>
+
+<!-- QUIZ SCREEN -->
+<div class="screen" id="qs">
+  <div id="hud">
+    <div>
+      <span class="hud-label">Score</span>
+      <span class="hud-val" id="h-score">0</span>
+    </div>
+    <div class="hud-sep"></div>
+    <div class="hearts" id="h-hearts"></div>
+    <div class="hud-sep"></div>
+    <div class="xp-bar-wrap">
+      <div class="xp-lbl">XP Progress</div>
+      <div class="xp-bar-bg"><div class="xp-bar-fill" id="xp-fill" style="width:0%"></div></div>
+    </div>
+    <div class="streak-badge" id="streak-badge">&#9733; <span id="streak-n">0</span>x</div>
+  </div>
+  <div id="qa">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+      <div class="q-num" id="q-num">Question 1 of 10</div>
+      <div style="font-size:11px;color:#c8a050;font-family:sans-serif;font-weight:700" id="timer-txt">30s</div>
+    </div>
+    <div class="prog-wrap"><div class="prog-bg"><div class="prog-fill" id="prog" style="width:0%"></div></div></div>
+    <div class="scholar-card">
+      <svg class="timer-ring" width="36" height="36" viewBox="0 0 36 36">
+        <circle cx="18" cy="18" r="14" fill="none" stroke="#1a0f30" stroke-width="3"/>
+        <circle cx="18" cy="18" r="14" fill="none" stroke="#c8a050" stroke-width="3" stroke-dasharray="88" id="timer-circ" stroke-linecap="round" transform="rotate(-90 18 18)" style="transition:stroke-dashoffset .9s linear,stroke .3s"/>
+      </svg>
+      <div class="cat-tag" id="q-cat">Category</div>
+      <div class="q-text" id="q-text">Question text</div>
+    </div>
+    <div class="choices" id="choices"></div>
+    <div class="lore-panel" id="lore">
+      <div class="lore-title">&#9670; Scholar's Lore &#9670;</div>
+      <div class="lore-result" id="lore-res"></div>
+      <div class="lore-text" id="lore-txt"></div>
+    </div>
+    <button class="next-btn" id="next-btn" onclick="nextQ()">Continue the journey &#8594;</button>
+  </div>
+</div>
+
+<!-- RESULT SCREEN -->
+<div class="screen" id="rs">
+  <div class="result-header">
+    <span class="trophy" id="r-trophy">&#127942;</span>
+    <div class="result-title" id="r-title">Grand Vizier of Knowledge</div>
+    <div class="result-rank" id="r-rank">&#9670; Master Scholar &#9670;</div>
+    <p class="result-sub" id="r-sub">You have honored the House of Wisdom.</p>
+  </div>
+  <div class="stats-grid">
+    <div class="stat-box"><span class="stat-n" id="r-correct">0/10</span><span class="stat-l">Correct</span></div>
+    <div class="stat-box"><span class="stat-n" id="r-score">0</span><span class="stat-l">Score</span></div>
+    <div class="stat-box"><span class="stat-n" id="r-streak">0x</span><span class="stat-l">Best streak</span></div>
+  </div>
+  <div class="fact-recap" id="fact-recap">
+    <div class="fact-recap-title">&#9670; Wisdom Unlocked &#9670;</div>
+    <div id="fact-list"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn-gold2" onclick="restartGame()">Play again</button>
+    <button class="btn-sec" onclick="sendPrompt('Tell me more fascinating facts about the Islamic Golden Age')">Learn more &#8599;</button>
+  </div>
+</div>
+</div>
+
+<script>
+const QS = [
+  {cat:"Mathematics",q:"Which Islamic scholar's name literally gave us the word 'algorithm' — and whose book gave us 'algebra'?",ch:["Ibn Rushd","Al-Khwarizmi","Al-Kindi","Al-Farabi"],a:1,lore:"Al-Khwarizmi (780–850 CE) wrote 'Kitab al-mukhtasar fi hisab al-jabr' — the word algebra comes from 'al-jabr' in the title. His Latinized name, Algoritmi, gave us the word algorithm. Without him, computer science might not exist!"},
+  {cat:"Medicine",q:"Ibn Sina's medical encyclopedia was used as a standard textbook in European universities for how long?",ch:["About 50 years","About 150 years","Over 600 years","About 300 years"],a:2,lore:"The Canon of Medicine (Al-Qanun fi al-Tibb) by Ibn Sina (Avicenna, 980–1037 CE) remained a primary medical textbook in Europe until the 17th century. He described over 760 drugs and was first to identify that soil and water can spread disease."},
+  {cat:"Astronomy",q:"Islamic astronomers named hundreds of stars still used today. Which of these is an Arabic star name?",ch:["Sirius","Polaris","Betelgeuse","Andromeda"],a:2,lore:"Betelgeuse comes from 'Yad al-Jawza' (shoulder of the giant). Rigel, Aldebaran, Vega, Altair — all Arabic. Islamic astronomers built precise observatories and corrected Greek astronomical errors by a thousand years before Galileo's telescope."},
+  {cat:"Science",q:"The House of Wisdom (Bayt al-Hikma) was a legendary center of learning. Where was it located?",ch:["Cairo, Egypt","Cordoba, Spain","Baghdad, Iraq","Samarkand, Uzbekistan"],a:2,lore:"Founded in Baghdad around 830 CE under Caliph Al-Ma'mun, it was the world's greatest library and research center. Scholars translated Greek, Persian, and Indian texts, preserving knowledge that would have otherwise been lost forever."},
+  {cat:"Optics",q:"Ibn al-Haytham (Alhazen) overturned a 1000-year-old Greek idea. What did he correctly prove?",ch:["The earth orbits the sun","Light enters the eye from objects — not the reverse","Sound is a form of light","The earth is spherical"],a:1,lore:"Ancient Greeks believed eyes shoot rays outward to 'see' things. Ibn al-Haytham's Book of Optics (1011 CE) proved that light reflects off objects into our eyes. He also invented the camera obscura and is considered the founder of the scientific method of experimentation."},
+  {cat:"Geography",q:"Al-Idrisi created one of the most accurate medieval world maps in 1154 CE. For which ruler did he make it?",ch:["The Caliph of Baghdad","The Sultan of Cairo","King Roger II of Sicily","The Holy Roman Emperor"],a:2,lore:"Al-Idrisi worked at the Norman court in Sicily! His world map (Tabula Rogeriana) was so accurate it wasn't surpassed for 300 years. Interestingly, his map was oriented with south at the top — a common convention in Arabic cartography."},
+  {cat:"Medicine",q:"Al-Zahrawi of Cordoba, father of modern surgery, pioneered a technique still used in hospitals today. What was it?",ch:["Blood transfusion","Anesthesia via gas","Dissolvable stitches (catgut)","X-ray imaging"],a:2,lore:"Al-Zahrawi (936–1013 CE) described dissolvable catgut sutures — stitches that dissolve naturally inside the body. He also illustrated over 200 surgical instruments in his encyclopedia 'Kitab al-Tasrif'. Modern surgery owes him enormously."},
+  {cat:"Mathematics",q:"Which number, introduced to Europe via Islamic scholarship, revolutionized mathematics and made modern computing possible?",ch:["The number Pi","The concept of zero","Negative numbers","Irrational numbers"],a:1,lore:"Islamic scholars adopted the Hindu-Arabic numeral system including zero and transmitted it to Europe. Before zero, arithmetic was painfully slow using Roman numerals. Zero is why computers work — it's the foundation of binary code (0s and 1s)."},
+  {cat:"Philosophy",q:"Which Islamic philosopher is known as 'The Second Teacher' (after Aristotle) for his vast contributions to logic, music theory, and philosophy?",ch:["Ibn Rushd","Al-Ghazali","Al-Farabi","Ibn Khaldun"],a:2,lore:"Al-Farabi (872–950 CE) wrote extensively on logic, political philosophy, and the theory of music. He argued that reason and religion could coexist — a radical idea. His work directly influenced later European thinkers like Thomas Aquinas."},
+  {cat:"Science",q:"Which city in Islamic Spain became one of Europe's most advanced cities by the 10th century — with paved streets, public lighting, and over 70 libraries?",ch:["Toledo","Granada","Seville","Cordoba"],a:3,lore:"By 900 CE, Cordoba had a population of 500,000 (London had about 10,000). It had paved roads, street lights, running water, hospitals, and 70 libraries. The Great Mosque of Cordoba (now a cathedral) still stands as one of the world's most stunning buildings."}
+];
+
+let qs,qi,score,lives,streak,bestStreak,correct,answered,timerID,timeLeft,wrongLog=[];
+
+function shuffle(a){return[...a].sort(()=>Math.random()-.5)}
+
+function startGame(){
+  qs=shuffle(QS);qi=0;score=0;lives=3;streak=0;bestStreak=0;correct=0;answered=false;wrongLog=[];
+  show('qs');renderQ();
+}
+function restartGame(){show('ts')}
+function show(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));document.getElementById(id).classList.add('on')}
+
+function renderHearts(){
+  document.getElementById('h-hearts').innerHTML=Array.from({length:3},(_,i)=>`<span class="heart${i>=lives?' lost':''}">&#10084;</span>`).join('')
+}
+
+function renderQ(){
+  const q=qs[qi];answered=false;
+  document.getElementById('q-num').textContent=`Question ${qi+1} of ${qs.length}`;
+  document.getElementById('q-cat').textContent=q.cat;
+  document.getElementById('q-text').textContent=q.q;
+  document.getElementById('prog').style.width=`${(qi/qs.length)*100}%`;
+  document.getElementById('h-score').textContent=score;
+  document.getElementById('lore').classList.remove('show');
+  document.getElementById('next-btn').classList.remove('show');
+  renderHearts();
+  const sb=document.getElementById('streak-badge');
+  if(streak>=2){sb.classList.add('on');document.getElementById('streak-n').textContent=streak}
+  else sb.classList.remove('on');
+  const ltrs=['A','B','C','D'];
+  const ch=document.getElementById('choices');
+  ch.innerHTML='';
+  q.ch.forEach((c,i)=>{
+    const b=document.createElement('button');
+    b.className='choice';
+    b.innerHTML=`<span class="ch-letter">${ltrs[i]}</span><span>${c}</span>`;
+    b.onclick=()=>pick(i);
+    ch.appendChild(b);
+  });
+  startTimer();
+}
+
+function startTimer(){
+  clearInterval(timerID);timeLeft=30;
+  const circ=document.getElementById('timer-circ');
+  const txt=document.getElementById('timer-txt');
+  const total=88;
+  function tick(){
+    const pct=timeLeft/30;
+    circ.setAttribute('stroke-dashoffset',total*(1-pct));
+    circ.setAttribute('stroke',timeLeft>10?'#c8a050':'#d05060');
+    txt.textContent=timeLeft+'s';
+    txt.style.color=timeLeft>10?'#c8a050':'#d05060';
+    if(timeLeft<=0){clearInterval(timerID);timeUp();}
+    timeLeft--;
+  }
+  tick();timerID=setInterval(tick,1000);
+}
+
+function timeUp(){
+  if(answered)return;
+  answered=true;
+  clearInterval(timerID);
+  const q=qs[qi];
+  const btns=document.querySelectorAll('.choice');
+  btns.forEach(b=>b.disabled=true);
+  btns[q.a].classList.add('reveal');
+  lives--;streak=0;
+  renderHearts();
+  wrongLog.push(qi);
+  showLore(false,q.lore,"Time's up!");
+}
+
+function pick(idx){
+  if(answered)return;
+  answered=true;clearInterval(timerID);
+  const q=qs[qi];
+  const btns=document.querySelectorAll('.choice');
+  btns.forEach(b=>b.disabled=true);
+  if(idx===q.a){
+    btns[idx].classList.add('correct');
+    const bonus=streak>=2?streak*15:0;const pts=100+bonus;
+    score+=pts;correct++;streak++;
+    if(streak>bestStreak)bestStreak=streak;
+    showXpPop(`+${pts}`);
+    document.getElementById('xp-fill').style.width=`${Math.min(100,(correct/qs.length)*100)}%`;
+    showLore(true,q.lore,'Correct!');
+  } else {
+    btns[idx].classList.add('wrong');
+    btns[q.a].classList.add('reveal');
+    lives--;streak=0;
+    renderHearts();
+    wrongLog.push(qi);
+    showLore(false,q.lore,'Not quite...');
+  }
+  document.getElementById('h-score').textContent=score;
+  const sb=document.getElementById('streak-badge');
+  if(streak>=2){sb.classList.add('on');document.getElementById('streak-n').textContent=streak}
+  else sb.classList.remove('on');
+  const isLast=qi>=qs.length-1||lives<=0;
+  const nb=document.getElementById('next-btn');
+  nb.textContent=isLast?'See your results →':'Continue the journey →';
+  nb.onclick=isLast?showResults:nextQ;
+  nb.classList.add('show');
+}
+
+function showLore(win,txt,res){
+  const p=document.getElementById('lore');
+  const r=document.getElementById('lore-res');
+  const t=document.getElementById('lore-txt');
+  r.className='lore-result '+(win?'win':'lose');
+  r.textContent=res;
+  t.textContent=txt;
+  p.classList.add('show');
+}
+
+function nextQ(){qi++;if(qi>=qs.length||lives<=0){showResults();return;}renderQ();}
+
+function showXpPop(txt){
+  const hud=document.getElementById('hud');
+  const pop=document.createElement('div');
+  pop.className='xp-pop';
+  pop.textContent=txt;
+  pop.style.cssText=`top:8px;right:${Math.random()*60+20}px`;
+  hud.style.position='relative';
+  hud.appendChild(pop);
+  setTimeout(()=>pop.remove(),900);
+}
+
+function showResults(){
+  clearInterval(timerID);show('rs');
+  const pct=Math.round(correct/qs.length*100);
+  let trophy,title,rank,sub;
+  if(pct===100){trophy='&#127942;';title='Grand Vizier of Knowledge';rank='&#9670; Keeper of the House of Wisdom &#9670;';sub='Perfect score — Al-Khwarizmi himself would bow to you.'}
+  else if(pct>=80){trophy='&#128218;';title='Master Scholar of Baghdad';rank='&#9670; Senior Fellow &#9670;';sub='Your knowledge rivals the greatest minds of the Golden Age.'}
+  else if(pct>=60){trophy='&#128300;';title='Astronomer of Cordoba';rank='&#9670; Apprentice Scholar &#9670;';sub='A solid foundation — the stars are watching your progress.'}
+  else if(pct>=40){trophy='&#128203;';title='Student of the Medina';rank='&#9670; Seeker of Wisdom &#9670;';sub='Every great scholar began with curiosity. Keep learning!'}
+  else{trophy='&#128336;';title='Wanderer at the Gates';rank='&#9670; Novice &#9670;';sub="The House of Wisdom awaits — its doors are always open."}
+  document.getElementById('r-trophy').innerHTML=trophy;
+  document.getElementById('r-title').textContent=title;
+  document.getElementById('r-rank').innerHTML=rank;
+  document.getElementById('r-sub').textContent=sub;
+  document.getElementById('r-correct').textContent=`${correct}/${qs.length}`;
+  document.getElementById('r-score').textContent=score;
+  document.getElementById('r-streak').textContent=`${bestStreak}x`;
+  const fl=document.getElementById('fact-list');
+  fl.innerHTML='';
+  qs.forEach((q,i)=>{
+    const d=document.createElement('div');d.className='fact-item';
+    d.innerHTML=`<div class="fact-q">${q.cat} — ${q.q.substring(0,60)}...</div><div class="fact-a">${q.lore.substring(0,140)}...</div>`;
+    fl.appendChild(d);
+  });
+}
+
+function buildStars(){
+  const sf=document.getElementById('sf');
+  for(let i=0;i<60;i++){
+    const s=document.createElement('div');s.className='s';
+    const sz=Math.random()*2.5+.5;
+    s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;opacity:${Math.random()*.6+.2};animation:pulse ${1.5+Math.random()*3}s ${Math.random()*2}s infinite`;
+    sf.appendChild(s);
+  }
+}
+buildStars();
+</script>
